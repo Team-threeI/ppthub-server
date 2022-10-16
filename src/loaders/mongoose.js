@@ -1,5 +1,13 @@
+const mongoose = require("mongoose");
+
 const mongooseLoader = async () => {
-  console.log("not connected to mongoose yet");
+  try {
+    await mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });
+
+    console.info("Connected to database...");
+  } catch (err) {
+    console.error("connection error");
+  }
 };
 
 module.exports = mongooseLoader;
