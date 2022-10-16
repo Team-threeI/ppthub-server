@@ -1,18 +1,18 @@
 {
   "name": "ppthub-server",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "start": "node app.js",
     "dev": "NODE_ENV=development nodemon app.js"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "~4.16.1",
-    "http-errors": "~1.6.3"
+    "http-errors": "~1.6.3",
+    "mongoose": "^6.6.5"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
