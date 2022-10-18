@@ -1,4 +1,5 @@
 const express = require("express");
+const createError = require("http-errors");
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router.post("/api/parse", (req, res, next) => {
 
     res.status(200).json();
   } catch {
-    res.status(500).json();
+    next(createError(500));
   }
 });
 
