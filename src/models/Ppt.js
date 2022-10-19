@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
 const pptSchema = new mongoose.Schema({
-  pptId: { type: String, required: true },
-  name: { type: String, required: true },
-  data: { type: Object, required: true },
   downloadUrl: { type: String },
+  slides: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PptSlide",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
