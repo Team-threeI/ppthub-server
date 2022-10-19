@@ -12,12 +12,9 @@ router.post("/api/ppt/save", async (req, res, next) => {
     const ppt = new Ppt();
     await ppt.save();
 
-    pptData.slides.forEach(async (slide) => {
-      const data = await PptSlide.create({ data: slide });
-      await Ppt.findByIdAndUpdate(
-        { _id: ppt._id },
-        { $push: { slides: data._id } },
-      );
+    pptData.slides.forEach(async (slideData) => {
+      const slide = await PptSlide.create({ data: slideData });
+      await Ppt.findByIdAndUpdate(ppt._id, { $push: { slides: slide._id } });
     });
 
     res.status(200).json(ppt._id);
