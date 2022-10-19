@@ -1,13 +1,23 @@
 const express = require("express");
 const createError = require("http-errors");
 
+const Ppt = require("../models/Ppt");
+const PptSlide = require("../models/PptSlide");
+
 const router = express.Router();
 
-router.post("/api/parse", (req, res, next) => {
+router.post("/api/ppt/save", async (req, res, next) => {
   try {
-    const ppt = req.files.pptx;
+    const { pptData } = req.body;
+    const ppt = new Ppt();
+    await ppt.save();
 
-    res.status(200).json();
+    pptData.slides.forEach(async (slideData) => {
+      const slide = await PptSlide.create({ data: slideData });
+      await Ppt.findByIdAndUpdate(ppt._id, { $push: { slides: slide._id } });
+    });
+
+    res.status(200).json(ppt._id);
   } catch {
     next(createError(500));
   }

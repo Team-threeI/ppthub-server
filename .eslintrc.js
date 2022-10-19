@@ -12,6 +12,7 @@ module.exports = {
   plugins: ["prettier"],
   rules: {
     semi: "warn",
+    "no-underscore-dangle": "off",
     "no-unused-vars": "warn",
   },
   ignorePatterns: ["!.eslintrc.js", "!.prettierrc.json"],
