@@ -7,7 +7,7 @@ const differ = require("../utils/differ");
 
 const router = express.Router();
 
-router.post("/api/ppt/save", async (req, res, next) => {
+router.post("/api/ppts/save", async (req, res, next) => {
   try {
     const { pptData } = req.body;
     const ppt = new Ppt({
