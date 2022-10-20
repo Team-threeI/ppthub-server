@@ -1,9 +1,9 @@
 const express = require("express");
 const createError = require("http-errors");
-const differ = require("../utils/differ");
 
 const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
+const differ = require("../utils/differ");
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ router.post("/api/ppt/save", async (req, res, next) => {
   }
 });
 
-router.post("/api/ppt/compare", async (req, res, next) => {
+router.post("/api/ppts/compare", async (req, res, next) => {
   try {
     const { originalPptId, comparablePptId } = req.body;
     const originalPpt = await Ppt.findById(originalPptId)
