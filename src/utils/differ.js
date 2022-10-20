@@ -25,7 +25,7 @@ const getMatchingIds = (originIdSet, compareIdSet) => {
   };
 };
 
-const getItemModified = (originItem, compareItem) => {
+const checkItemModified = (originItem, compareItem) => {
   const checkAttributes = ["x", "y", "width", "height"];
   const isSameWith = (attribute) =>
     originItem[attribute] === compareItem[attribute];
@@ -98,7 +98,7 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
   matchedItems.forEach((item) => {
     const originItem = originItemsMap.get(item);
     const compareItem = compareItemsMap.get(item);
-    const isModified = getItemModified(originItem, compareItem);
+    const isModified = checkItemModified(originItem, compareItem);
 
     if (isModified && diff === "none") {
       diff = "modified";
