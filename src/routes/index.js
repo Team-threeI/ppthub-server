@@ -1,5 +1,6 @@
 const express = require("express");
 const createError = require("http-errors");
+const differ = require("../utils/differ");
 
 const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
@@ -21,6 +22,24 @@ router.post("/api/ppt/save", async (req, res, next) => {
     });
 
     res.status(200).json(ppt._id);
+  } catch {
+    next(createError(500));
+  }
+});
+
+router.post("/api/ppt/compare", async (req, res, next) => {
+  try {
+    const { originalPptId, comparablePptId } = req.body;
+    const originalPpt = await Ppt.findById(originalPptId).lean();
+    const comparablePpt = await Ppt.findById(comparablePptId).lean();
+
+    if (!originalPpt || !comparablePpt) {
+      next(createError(500));
+    }
+
+    const diffData = differ(originalPpt, comparablePpt);
+
+    res.status(200).json(diffData);
   } catch {
     next(createError(500));
   }
