@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const pptSchema = new mongoose.Schema(
   {
+    slideWidth: { type: Number, default: 1280 },
+    slideHeight: { type: Number, default: 720 },
     downloadUrl: { type: String },
     slides: [
       {
