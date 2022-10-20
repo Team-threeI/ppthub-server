@@ -1,6 +1,6 @@
 {
   "name": "ppthub-server",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -11,7 +11,8 @@
     "dotenv": "^16.0.3",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "mongoose": "^6.6.5"
+    "mongoose": "^6.6.5",
+    "node-cron": "^3.0.2"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
