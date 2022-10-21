@@ -85,7 +85,6 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
       value: {
         diff: "added",
         isChecked: false,
-        enumerable: true,
       },
     });
   });
@@ -98,7 +97,6 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
       },
     });
   });
-
   matchedItems.forEach((item) => {
     const originItem = originItemsMap.get(item);
     const compareItem = compareItemsMap.get(item);
