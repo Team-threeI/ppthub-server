@@ -7,6 +7,6 @@ const pptSlideSchema = new mongoose.Schema(
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 
-pptSlideSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
+pptSlideSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 module.exports = mongoose.model("PptSlide", pptSlideSchema);
