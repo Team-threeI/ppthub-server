@@ -3,7 +3,7 @@ const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
 
 const dbSchedulerLoader = async () => {
-  const yesterDay = new Date(new Date());
+  const yesterDay = new Date();
   yesterDay.setDate(yesterDay.getDate() - 1);
 
   cron.schedule("0 1 * * *", async () => {
