@@ -61,10 +61,10 @@ const checkItemModified = (originItem, compareItem) => {
 
 const getSlideDiff = (originSlideItems, compareSlideItems) => {
   const originItemsMap = new Map(
-    originSlideItems.map((item) => [item.itemId, item]),
+    originSlideItems.map((item) => [item.id.itemName, item]),
   );
   const compareItemsMap = new Map(
-    compareSlideItems.map((item) => [item.itemId, item]),
+    compareSlideItems.map((item) => [item.id.itemName, item]),
   );
   const {
     matchedIds: matchedItems,
@@ -81,6 +81,7 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
 
   addedItems.forEach((item) => {
     Object.defineProperty(slideDiffData.items, item, {
+      enumerable: true,
       value: {
         diff: "added",
         isChecked: false,
@@ -89,6 +90,7 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
   });
   deletedItems.forEach((item) => {
     Object.defineProperty(slideDiffData.items, item, {
+      enumerable: true,
       value: {
         diff: "deleted",
         isChecked: false,
@@ -105,6 +107,7 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
     }
 
     Object.defineProperty(slideDiffData.items, item, {
+      enumerable: true,
       value: {
         diff: isModified ? "modified" : "none",
         ...(isModified ? { isChecked: false } : {}),
@@ -113,6 +116,7 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
   });
 
   Object.defineProperty(slideDiffData, "diff", {
+    enumerable: true,
     value: diff,
   });
 
@@ -121,10 +125,10 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
 
 const pptDataDiffer = (originPpt, comparePpt) => {
   const originPptMap = new Map(
-    originPpt.slides.map(({ slideId, items }) => [slideId, items]),
+    originPpt.slides.map(({ data: { slideId, items } }) => [slideId, items]),
   );
   const comparePptMap = new Map(
-    comparePpt.slides.map(({ slideId, items }) => [slideId, items]),
+    comparePpt.slides.map(({ data: { slideId, items } }) => [slideId, items]),
   );
   const {
     matchedIds: matchedSlides,
@@ -138,6 +142,7 @@ const pptDataDiffer = (originPpt, comparePpt) => {
 
   deletedSlides.forEach((slide) => {
     Object.defineProperty(diffData, slide, {
+      enumerable: true,
       value: {
         diff: "deleted",
         isChecked: false,
@@ -146,6 +151,7 @@ const pptDataDiffer = (originPpt, comparePpt) => {
   });
   addedSlides.forEach((slide) => {
     Object.defineProperty(diffData, slide, {
+      enumerable: true,
       value: {
         diff: "added",
         isChecked: false,
@@ -156,8 +162,7 @@ const pptDataDiffer = (originPpt, comparePpt) => {
     const originSlideItems = originPptMap.get(slide);
     const compareSlideItems = comparePptMap.get(slide);
     const value = getSlideDiff(originSlideItems, compareSlideItems);
-
-    Object.defineProperty(diffData, slide, { value });
+    Object.defineProperty(diffData, slide, { enumerable: true, value });
   });
 
   return diffData;
