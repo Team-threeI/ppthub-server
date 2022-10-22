@@ -2,6 +2,7 @@ const PPTXGEN = require("pptxgenjs");
 
 const mergeToPptFile = async (mergeData) => {
   const ppt = new PPTXGEN();
+  ppt.layout = "LAYOUT_WIDE";
 
   for (let i = 0; i < mergeData.slides.length; i += 1) {
     const slide = ppt.addSlide();
@@ -34,20 +35,15 @@ const mergeToPptFile = async (mergeData) => {
       }
 
       if (slideBase.type === "text") {
-        if (!slideContent.backgroundColor) {
-          slide.addText(slideContent.value, {
-            ...slideContentsPosition,
-            ...slideContentStyle,
-          });
-        }
-
-        if (slideContent.backgroundColor) {
-          slide.addText(slideContent.value, {
-            ...slideContentsPosition,
-            ...slideContentStyle,
-            fill: { color: slideContent.backgroundColor },
-          });
-        }
+        slide.addText(slideContent.value, {
+          ...(slideContent.backgroundColor && {
+            fill: {
+              color: slideContent.backgroundColor,
+            },
+          }),
+          ...slideContentsPosition,
+          ...slideContentStyle,
+        });
       }
     }
   }
