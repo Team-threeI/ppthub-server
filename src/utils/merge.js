@@ -97,12 +97,12 @@ const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
     modifiedComparableSlides[i].items = items;
   }
 
-  const MergedModifiedSlides = getMergedModifiedSlides(
+  const mergedModifiedSlides = getMergedModifiedSlides(
     modifiedOriginalSlides,
     modifiedComparableSlides,
   );
 
-  const slides = [...MergedModifiedSlides, ...addedSlides];
+  const slides = [...mergedModifiedSlides, ...addedSlides];
   mergedPpt.slides = slides;
 
   return mergedPpt;
