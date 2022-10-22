@@ -1,34 +1,31 @@
-const getOriginalSlideItems = (originalItems, mergedData) => {
-  const itemsMap = new Map(Object.entries(mergedData.items));
+const DIFF_TYPES = require("../config/diffTypes");
+
+const getSlideItems = (originalItems, mergedData, pptType) => {
+  const mergedItemsData = mergedData.items;
   const mergedItems = originalItems.items.filter((item) => {
     if (
-      (itemsMap.get(item.id).diff === "modified" &&
-        !itemsMap.get(item.id).isChecked) ||
-      (itemsMap.get(item.id).diff === "deleted" &&
-        itemsMap.get(item.id).isChecked)
+      (pptType === "original" &&
+        mergedItemsData[item.id].diff === DIFF_TYPES.MODIFIED &&
+        !mergedItemsData[item.id].isChecked) ||
+      (pptType === "original" &&
+        mergedItemsData[item.id].diff === DIFF_TYPES.DELETED &&
+        mergedItemsData[item.id].isChecked)
     ) {
-      return item;
+      return true;
     }
 
-    return null;
-  });
-
-  return mergedItems;
-};
-
-const getComparableSlideItems = (comparableItems, mergedData) => {
-  const itemsMap = new Map(Object.entries(mergedData.items));
-  const mergedItems = comparableItems.items.filter((item) => {
     if (
-      (itemsMap.get(item.id).diff === "modified" &&
-        itemsMap.get(item.id).isChecked) ||
-      (itemsMap.get(item.id).diff === "added" &&
-        itemsMap.get(item.id).isChecked)
+      (pptType === "comparison" &&
+        mergedItemsData[item.id].diff === DIFF_TYPES.MODIFIED &&
+        mergedItemsData[item.id].isChecked) ||
+      (pptType === "comparison" &&
+        mergedItemsData[item.id].diff === DIFF_TYPES.ADDED &&
+        mergedItemsData[item.id].isChecked)
     ) {
-      return item;
+      return true;
     }
 
-    return null;
+    return false;
   });
 
   return mergedItems;
@@ -40,11 +37,11 @@ const getMergedModifiedSlides = (
 ) => {
   return modifiedOriginalSlides.map((slide) => {
     const tempSlide = slide;
-    const MatchedSlide = modifiedComparableSlides.find(
+    const matchedSlide = modifiedComparableSlides.find(
       (comparableSlide) => slide.slideId === comparableSlide.slideId,
     );
-    if (MatchedSlide) {
-      tempSlide.items = [...slide.items, ...MatchedSlide.items];
+    if (matchedSlide) {
+      tempSlide.items = [...slide.items, ...matchedSlide.items];
       return tempSlide;
     }
 
@@ -52,50 +49,48 @@ const getMergedModifiedSlides = (
   });
 };
 
+const getModifiedSlides = (slides, mergeData) => {
+  return slides
+    .filter(
+      (slide) => mergeData[slide.data.slideId].diff === DIFF_TYPES.MODIFIED,
+    )
+    .map((slide) => {
+      const { slideId, items } = slide.data;
+      return { slideId, items };
+    });
+};
+
 const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
-  const mergeDataMap = new Map(Object.entries(mergeData));
-  const mergedPpt = {
-    slideWidth: originalPpt.slideWidth,
-    slideHeight: originalPpt.slideHeight,
-  };
-
-  const modifiedOriginalSlides = originalPpt.slides
-    .filter(
-      (slide) => mergeDataMap.get(`${slide.data.slideId}`).diff === "modified",
-    )
-    .map((slide) => {
-      const { slideId, items } = slide.data;
-      return { slideId, items };
-    });
-  const modifiedComparableSlides = comparablePpt.slides
-    .filter(
-      (slide) => mergeDataMap.get(`${slide.data.slideId}`).diff === "modified",
-    )
-    .map((slide) => {
-      const { slideId, items } = slide.data;
-      return { slideId, items };
-    });
+  const modifiedOriginalSlides = getModifiedSlides(
+    originalPpt.slides,
+    mergeData,
+  );
+  const modifiedComparableSlides = getModifiedSlides(
+    comparablePpt.slides,
+    mergeData,
+  );
   const addedSlides = [...originalPpt.slides, ...comparablePpt.slides]
-    .filter((slide) => mergeDataMap.get(`${slide.data.slideId}`).isChecked)
+    .filter(
+      (slide) =>
+        !mergeData[slide.data.slideId] ||
+        mergeData[slide.data.slideId].diff === DIFF_TYPES.NONE ||
+        mergeData[slide.data.slideId].isChecked,
+    )
     .map((slide) => {
       const { slideId, items } = slide.data;
       return { slideId, items };
     });
 
-  for (let i = 0; i < modifiedOriginalSlides.length; i += 1) {
-    const items = getOriginalSlideItems(
-      modifiedOriginalSlides[i],
-      mergeData[modifiedOriginalSlides[i].slideId],
-    );
-    modifiedOriginalSlides[i].items = items;
-  }
-  for (let i = 0; i < modifiedComparableSlides.length; i += 1) {
-    const items = getComparableSlideItems(
-      modifiedComparableSlides[i],
-      mergeData[modifiedComparableSlides[i].slideId],
-    );
-    modifiedComparableSlides[i].items = items;
-  }
+  modifiedOriginalSlides.map((slide) => {
+    const pptType = "original";
+    const items = getSlideItems(slide, mergeData[slide.slideId], pptType);
+    return Object.assign(slide, { items });
+  });
+  modifiedComparableSlides.map((slide) => {
+    const pptType = "comparison";
+    const items = getSlideItems(slide, mergeData[slide.slideId], pptType);
+    return Object.assign(slide, { items });
+  });
 
   const mergedModifiedSlides = getMergedModifiedSlides(
     modifiedOriginalSlides,
@@ -103,7 +98,12 @@ const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
   );
 
   const slides = [...mergedModifiedSlides, ...addedSlides];
-  mergedPpt.slides = slides;
+
+  const mergedPpt = {
+    slideWidth: originalPpt.slideWidth,
+    slideHeight: originalPpt.slideHeight,
+    slides,
+  };
 
   return mergedPpt;
 };
