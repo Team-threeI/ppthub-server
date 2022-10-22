@@ -4,15 +4,17 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dev": "NODE_ENV=development nodemon app.js"
+    "dev": "nodemon app.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.1238.0",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "mongoose": "^6.6.5",
-    "node-cron": "^3.0.2"
+    "node-cron": "^3.0.2",
+    "pptxgenjs": "^3.11.0"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
