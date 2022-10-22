@@ -1,8 +1,16 @@
 const DIFF_TYPES = require("../config/diffTypes");
 
-const getSlideItems = (originalItems, mergedData, pptType) => {
+/*
+getSlideItems 함수는 slide에서 merge할 아이템들만 선별해서 반환하는 함수입니다
+original ppt이고 아이템의 diff Type이 modified이면서 isChecked가 false인 경우 혹은
+diff Type이 deleted이면서 isChecked 가 true인 경우,
+comparable ppt이고 아이템의 diff Type이 modified이면서 isChecked가 true인 경우 혹은
+diff Type이 added이면서 isChecked 가 true인 경우의 아이템을 선별해 반환합니다.
+*/
+
+const getSlideItems = (slides, mergedData, pptType) => {
   const mergedItemsData = mergedData.items;
-  const mergedItems = originalItems.items.filter((item) => {
+  const mergedItems = slides.items.filter((item) => {
     if (
       (pptType === "original" &&
         mergedItemsData[item.id].diff === DIFF_TYPES.MODIFIED &&
@@ -31,6 +39,12 @@ const getSlideItems = (originalItems, mergedData, pptType) => {
   return mergedItems;
 };
 
+/*
+getMergedModifiedSlides 함수는 diff type이 modified인 slide들을 병합해주는 함수입니다.
+modifiedOriginalSlides와 modifiedComparableSlides에서 공통된 slide를 찾아 slide 아이템을 합치고
+반환을 해줍니다.
+*/
+
 const getMergedModifiedSlides = (
   modifiedOriginalSlides,
   modifiedComparableSlides,
@@ -49,6 +63,11 @@ const getMergedModifiedSlides = (
   });
 };
 
+/*
+getModifiedSlides 함수는 diff type이 modified인 slide들을 찾아서 반환을 해주는 함수입니다.
+또한 DB에서 조회한 ppt의 형식이 변환되었기때문에 map을 이용하여 처음 parse된 형식으로 변환해줍니다.
+*/
+
 const getModifiedSlides = (slides, mergeData) => {
   return slides
     .filter(
@@ -59,6 +78,15 @@ const getModifiedSlides = (slides, mergeData) => {
       return { slideId, items };
     });
 };
+
+/*
+getMergedPpt 함수는 두개의 ppt데이터와 merge요청 데이터를 통해 merge를 해 하나의 새로운 ppt로 만들어 반환해줍니다.
+getModifiedSlides 함수를 이용해 슬라이드 내부 아이템이 변경이된  modifiedSlide들을 찾고
+original ppt와 comparable ppt에서 merge를 해줄 슬라이드들을 addedSlides를 통해 얻습니다.
+getSlideItems함수를 통해 modifiedSlide들 내부에서 merge해줄 아이템들을 찾습니다.
+getMergedModifiedSlides함수를 통해 병합할 original과 comparable modifiedSlide들을 병합해줍니다.
+이 후 추출된 slides들을 모아 새로운 ppt파일을 만들어 반환해줍니다.
+*/
 
 const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
   const modifiedOriginalSlides = getModifiedSlides(
