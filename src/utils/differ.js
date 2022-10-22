@@ -1,3 +1,5 @@
+const DIFF_TYPES = require("../config/diffTypes");
+
 const getMatchingIds = (originIdSet, compareIdSet) => {
   const { matchedIds, deletedIds } = Array.from(originIdSet).reduce(
     (acc, originId) => {
@@ -77,13 +79,16 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
   const slideDiffData = {
     items: {},
   };
-  let diff = addedItems.length || deletedItems.length ? "modified" : "none";
+  let diff =
+    addedItems.length || deletedItems.length
+      ? DIFF_TYPES.MODIFIED
+      : DIFF_TYPES.NONE;
 
   addedItems.forEach((item) => {
     Object.defineProperty(slideDiffData.items, item, {
       enumerable: true,
       value: {
-        diff: "added",
+        diff: DIFF_TYPES.ADDED,
         isChecked: false,
       },
     });
@@ -92,7 +97,7 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
     Object.defineProperty(slideDiffData.items, item, {
       enumerable: true,
       value: {
-        diff: "deleted",
+        diff: DIFF_TYPES.DELETED,
         isChecked: false,
       },
     });
@@ -102,14 +107,14 @@ const getSlideDiff = (originSlideItems, compareSlideItems) => {
     const compareItem = compareItemsMap.get(item);
     const isModified = checkItemModified(originItem, compareItem);
 
-    if (isModified && diff === "none") {
-      diff = "modified";
+    if (isModified && diff === DIFF_TYPES.NONE) {
+      diff = DIFF_TYPES.MODIFIED;
     }
 
     Object.defineProperty(slideDiffData.items, item, {
       enumerable: true,
       value: {
-        diff: isModified ? "modified" : "none",
+        diff: isModified ? DIFF_TYPES.MODIFIED : DIFF_TYPES.NONE,
         ...(isModified ? { isChecked: false } : {}),
       },
     });
@@ -144,7 +149,7 @@ const pptDataDiffer = (originPpt, comparePpt) => {
     Object.defineProperty(diffData, slide, {
       enumerable: true,
       value: {
-        diff: "deleted",
+        diff: DIFF_TYPES.DELETED,
         isChecked: false,
       },
     });
@@ -153,7 +158,7 @@ const pptDataDiffer = (originPpt, comparePpt) => {
     Object.defineProperty(diffData, slide, {
       enumerable: true,
       value: {
-        diff: "added",
+        diff: DIFF_TYPES.ADDED,
         isChecked: false,
       },
     });
