@@ -31,15 +31,13 @@ const downloadPpt = (fileName) => {
     Key: `${fileName}.pptx`,
   };
 
-  s3.getObject(param, async (error, data) => {
+  s3.getSignedUrl("getObject", param, (error, data) => {
     if (!error) {
       return error;
     }
 
-    const buffer = await Buffer.from(data.Body, "utf-8");
-    const pptData = buffer.toString("base64");
-
-    return pptData;
+    const link = data.split("?")[0];
+    return link; // const link는 "https://BUCKET_NAME.s3.BUCKET_REGION.amazonaws.com/{filename}.pptx" 의 형태입니다.
   });
 };
 
