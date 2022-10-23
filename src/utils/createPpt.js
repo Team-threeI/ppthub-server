@@ -1,6 +1,6 @@
 const PPTXGEN = require("pptxgenjs");
 
-const mergeToPptFile = async (mergeData) => {
+const createPpt = async (mergeData) => {
   const ppt = new PPTXGEN();
   ppt.layout = "LAYOUT_WIDE";
 
@@ -11,7 +11,7 @@ const mergeToPptFile = async (mergeData) => {
       const slideBase = mergeData.slides[i].items[y];
       const slideContent = mergeData.slides[i].items[y].content;
 
-      const slideContentsPosition = {
+      const slideContentPosition = {
         x: slideBase.x / 96,
         y: slideBase.y / 96,
         w: slideBase.width / 96,
@@ -30,7 +30,7 @@ const mergeToPptFile = async (mergeData) => {
       if (slideBase.type === "image") {
         slide.addImage({
           path: slideContent.src,
-          ...slideContentsPosition,
+          ...slideContentPosition,
         });
       }
 
@@ -41,7 +41,7 @@ const mergeToPptFile = async (mergeData) => {
               color: slideContent.backgroundColor,
             },
           }),
-          ...slideContentsPosition,
+          ...slideContentPosition,
           ...slideContentStyle,
         });
       }
@@ -51,4 +51,4 @@ const mergeToPptFile = async (mergeData) => {
   return pptFile;
 };
 
-module.exports = mergeToPptFile;
+module.exports = createPpt;
