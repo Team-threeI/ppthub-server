@@ -12,10 +12,10 @@ const mergeToPptFile = async (mergeData) => {
       const slideContent = mergeData.slides[i].items[y].content;
 
       const slideContentsPosition = {
-        x: ((slideBase.x / 1280) * 25) / 2.6,
-        y: ((slideBase.y / 720) * 15) / 3.67,
-        w: (slideBase.width * 0.0264583333) / 2.725,
-        h: (slideBase.height * 0.0264583333) / 2.725,
+        x: slideBase.x / 96,
+        y: slideBase.y / 96,
+        w: slideBase.width / 96,
+        h: slideBase.height / 96,
       };
 
       const slideContentStyle = {
