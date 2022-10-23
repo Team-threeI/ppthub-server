@@ -13,22 +13,25 @@ const getSlideItems = (slides, mergedData, pptType) => {
   const mergedItems = slides.items.filter((item) => {
     if (
       (pptType === "original" &&
-        mergedItemsData[item.id].diff === DIFF_TYPES.MODIFIED &&
-        !mergedItemsData[item.id].isChecked) ||
+        mergedItemsData[item.itemId].diff === DIFF_TYPES.MODIFIED &&
+        !mergedItemsData[item.itemId].isChecked) ||
       (pptType === "original" &&
-        mergedItemsData[item.id].diff === DIFF_TYPES.DELETED &&
-        mergedItemsData[item.id].isChecked)
+        mergedItemsData[item.itemId].diff === DIFF_TYPES.DELETED &&
+        mergedItemsData[item.itemId].isChecked) ||
+      (pptType === "original" &&
+        mergedItemsData[item.itemId].diff === DIFF_TYPES.NONE) ||
+      (pptType === "original" && !mergedItemsData[item.itemId])
     ) {
       return true;
     }
 
     if (
       (pptType === "comparison" &&
-        mergedItemsData[item.id].diff === DIFF_TYPES.MODIFIED &&
-        mergedItemsData[item.id].isChecked) ||
+        mergedItemsData[item.itemId].diff === DIFF_TYPES.MODIFIED &&
+        mergedItemsData[item.itemId].isChecked) ||
       (pptType === "comparison" &&
-        mergedItemsData[item.id].diff === DIFF_TYPES.ADDED &&
-        mergedItemsData[item.id].isChecked)
+        mergedItemsData[item.itemId].diff === DIFF_TYPES.ADDED &&
+        mergedItemsData[item.itemId].isChecked)
     ) {
       return true;
     }
@@ -125,7 +128,9 @@ const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
     modifiedComparableSlides,
   );
 
-  const slides = [...mergedModifiedSlides, ...addedSlides];
+  const slides = [...mergedModifiedSlides, ...addedSlides].sort(
+    (prevSlide, nextSlide) => prevSlide.pageNumber - nextSlide.pageNumber,
+  );
 
   const mergedPpt = {
     slideWidth: originalPpt.slideWidth,

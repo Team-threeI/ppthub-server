@@ -63,10 +63,10 @@ const checkItemModified = (originItem, compareItem) => {
 
 const getSlideDiff = (originSlideItems, compareSlideItems) => {
   const originItemsMap = new Map(
-    originSlideItems.map((item) => [item.id.itemName, item]),
+    originSlideItems.map((item) => [item.itemId, item]),
   );
   const compareItemsMap = new Map(
-    compareSlideItems.map((item) => [item.id.itemName, item]),
+    compareSlideItems.map((item) => [item.itemId, item]),
   );
   const {
     matchedIds: matchedItems,
