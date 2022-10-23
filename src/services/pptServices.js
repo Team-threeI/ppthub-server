@@ -1,4 +1,5 @@
 const AWS = require("aws-sdk");
+const createError = require("http-errors");
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -31,13 +32,19 @@ const downloadPpt = async (fileName) => {
     Key: `${fileName}.pptx`,
   };
 
-  await s3.getSignedUrl("getObject", parameter, (error, data) => {
+  await s3.getObject(parameter, (error) => {
     if (error) {
-      return error;
+      return createError(500);
     }
+    s3.getSignedUrl("getObject", parameter, (secondError, data) => {
+      if (secondError) {
+        return createError(500);
+      }
+      const link = data.split("?")[0];
+      return link;
+    });
 
-    const link = data.split("?")[0];
-    return link; // const link는 "https://BUCKET_NAME.s3.BUCKET_REGION.amazonaws.com/{filename}.pptx" 의 형태입니다.
+    return true;
   });
 };
 
