@@ -6,9 +6,9 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
 });
 
-const uploadPpt = (pptx, fileName) => {
+const uploadPpt = async (pptx, fileName) => {
   const decode = Buffer.from(pptx, "base64");
-  const param = {
+  const parameter = {
     Bucket: process.env.AWS_BUCKET,
     Key: `${fileName}.pptx`,
     ACL: "public-read",
@@ -17,7 +17,7 @@ const uploadPpt = (pptx, fileName) => {
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   };
 
-  s3.upload(param, (error) => {
+  await s3.upload(parameter, (error) => {
     if (!error) {
       return error;
     }
@@ -25,13 +25,13 @@ const uploadPpt = (pptx, fileName) => {
   });
 };
 
-const downloadPpt = (fileName) => {
-  const param = {
+const downloadPpt = async (fileName) => {
+  const parameter = {
     Bucket: process.env.AWS_BUCKET,
     Key: `${fileName}.pptx`,
   };
 
-  s3.getSignedUrl("getObject", param, (error, data) => {
+  await s3.getSignedUrl("getObject", parameter, (error, data) => {
     if (!error) {
       return error;
     }
