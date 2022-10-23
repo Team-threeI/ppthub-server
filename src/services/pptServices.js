@@ -17,6 +17,7 @@ const uploadPpt = async (pptx, fileName) => {
     ContentType:
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   };
+
   try {
     await s3.upload(parameter).promise();
   } catch (error) {
@@ -29,10 +30,10 @@ const downloadPpt = async (fileName) => {
     Bucket: process.env.AWS_BUCKET,
     Key: `${fileName}.pptx`,
   };
+
   try {
     await s3.getObject(parameter).promise();
-    const link = s3.getSignedUrl("getObject", parameter).split("?")[0];
-    return link;
+    return s3.getSignedUrl("getObject", parameter).split("?")[0];
   } catch (error) {
     return createError(500);
   }
