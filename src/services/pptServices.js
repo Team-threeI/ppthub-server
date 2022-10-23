@@ -18,7 +18,7 @@ const uploadPpt = async (pptx, fileName) => {
   };
 
   await s3.upload(parameter, (error) => {
-    if (!error) {
+    if (error) {
       return error;
     }
     return true;
@@ -32,7 +32,7 @@ const downloadPpt = async (fileName) => {
   };
 
   await s3.getSignedUrl("getObject", parameter, (error, data) => {
-    if (!error) {
+    if (error) {
       return error;
     }
 
