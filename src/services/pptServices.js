@@ -17,13 +17,11 @@ const uploadPpt = async (pptx, fileName) => {
     ContentType:
       "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   };
-
-  await s3.upload(parameter, (error) => {
-    if (error) {
-      return error;
-    }
-    return true;
-  });
+  try {
+    await s3.upload(parameter).promise();
+  } catch (error) {
+    createError(500);
+  }
 };
 
 const downloadPpt = async (fileName) => {
@@ -31,21 +29,13 @@ const downloadPpt = async (fileName) => {
     Bucket: process.env.AWS_BUCKET,
     Key: `${fileName}.pptx`,
   };
-
-  await s3.getObject(parameter, (error) => {
-    if (error) {
-      return createError(500);
-    }
-    s3.getSignedUrl("getObject", parameter, (secondError, data) => {
-      if (secondError) {
-        return createError(500);
-      }
-      const link = data.split("?")[0];
-      return link;
-    });
-
-    return true;
-  });
+  try {
+    await s3.getObject(parameter).promise();
+    const link = s3.getSignedUrl("getObject", parameter).split("?")[0];
+    return link;
+  } catch (error) {
+    return createError(500);
+  }
 };
 
 module.exports = {
