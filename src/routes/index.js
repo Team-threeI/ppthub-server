@@ -3,7 +3,8 @@ const createError = require("http-errors");
 
 const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
-const { uploadPpt, downloadPpt } = require("../services/pptServices");
+const { uploadPpt } = require("../services/pptServices");
+const createPpt = require("../utils/createPpt");
 const differ = require("../utils/differ");
 const getMergedPpt = require("../utils/merge");
 
@@ -47,6 +48,38 @@ router.post("/api/ppts/compare", async (req, res, next) => {
     const diffData = differ(originalPpt, comparablePpt);
 
     res.status(200).json(diffData);
+  } catch {
+    next(createError(500));
+  }
+});
+
+router.post("/api/ppts/merge", async (req, res, next) => {
+  try {
+    const { originalPptId, comparablePptId, mergeData } = req.body;
+    const originalPpt = await Ppt.findById(originalPptId)
+      .populate("slides")
+      .lean();
+    const comparablePpt = await Ppt.findById(comparablePptId)
+      .populate("slides")
+      .lean();
+    const mergedPptData = getMergedPpt(originalPpt, comparablePpt, mergeData);
+    const createdPpt = createPpt(mergedPptData);
+    const downloadUrl = await uploadPpt(createdPpt, mergedPptData.fileName);
+    const ppt = new Ppt({
+      slideWidth: mergedPptData.slideWidth,
+      slideHeight: mergedPptData.slideHeight,
+      fileName: mergedPptData.fileName,
+      downloadUrl,
+    });
+
+    await ppt.save();
+
+    mergedPptData.slides.forEach(async (slideData) => {
+      const slide = await PptSlide.create({ data: slideData });
+      await Ppt.findByIdAndUpdate(ppt._id, { $push: { slides: slide._id } });
+    });
+
+    res.status(200).json({ pptId: ppt._id, mergedPptData });
   } catch {
     next(createError(500));
   }
