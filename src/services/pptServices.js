@@ -11,6 +11,8 @@ const uploadPpt = async (pptx, fileName) => {
   const parameter = {
     Bucket: process.env.AWS_BUCKET,
     Key: `${fileName}.pptx`,
+  };
+  const uploadParameter = {
     ACL: "public-read",
     Body: decode,
     ContentType:
@@ -18,22 +20,7 @@ const uploadPpt = async (pptx, fileName) => {
   };
 
   try {
-    await s3.upload(parameter).promise();
-
-    return true;
-  } catch (error) {
-    return new Error(error);
-  }
-};
-
-const downloadPpt = async (fileName) => {
-  const parameter = {
-    Bucket: process.env.AWS_BUCKET,
-    Key: `${fileName}.pptx`,
-  };
-
-  try {
-    await s3.getObject(parameter).promise();
+    await s3.upload({ ...parameter, ...uploadParameter }).promise();
 
     return s3.getSignedUrl("getObject", parameter).split("?")[0];
   } catch (error) {
@@ -41,7 +28,4 @@ const downloadPpt = async (fileName) => {
   }
 };
 
-module.exports = {
-  uploadPpt,
-  downloadPpt,
-};
+module.exports = uploadPpt;
