@@ -132,7 +132,16 @@ const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
     (prevSlide, nextSlide) => prevSlide.pageNumber - nextSlide.pageNumber,
   );
 
+  const createDate = new Intl.DateTimeFormat("en", {
+    dateStyle: "short",
+    timeStyle: "short",
+    hour12: false,
+  })
+    .format(new Date())
+    .replace(/,\s/gi, "");
+
   const mergedPpt = {
+    fileName: `${originalPpt.fileName}${createDate}`,
     slideWidth: originalPpt.slideWidth,
     slideHeight: originalPpt.slideHeight,
     slides,

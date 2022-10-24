@@ -11,8 +11,9 @@ const router = express.Router();
 
 router.post("/api/ppts/save", async (req, res, next) => {
   try {
-    const { pptData } = req.body;
+    const { pptData, fileName } = req.body;
     const ppt = new Ppt({
+      fileName,
       slideWidth: pptData.slideWidth,
       slideHeight: pptData.slideHeight,
     });
