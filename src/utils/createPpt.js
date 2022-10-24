@@ -23,8 +23,8 @@ const createPpt = async (mergeData) => {
           bold: slideContent.isBold,
           italic: slideContent.isItalic,
           underline: slideContent.isUnderlined,
-          fontface: slideContent.fontColor,
-          color: slideContent.fontcolor,
+          fontface: slideContent.fontFace,
+          color: slideContent.fontColor,
           fontSize: slideContent.size,
         };
 
