@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-const createError = require("http-errors");
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -20,8 +19,10 @@ const uploadPpt = async (pptx, fileName) => {
 
   try {
     await s3.upload(parameter).promise();
+
+    return true;
   } catch (error) {
-    createError(500);
+    return new Error(error);
   }
 };
 
@@ -33,9 +34,10 @@ const downloadPpt = async (fileName) => {
 
   try {
     await s3.getObject(parameter).promise();
+
     return s3.getSignedUrl("getObject", parameter).split("?")[0];
   } catch (error) {
-    return createError(500);
+    return new Error(error);
   }
 };
 
