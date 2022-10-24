@@ -3,7 +3,9 @@ const createError = require("http-errors");
 
 const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
+const { uploadPpt, downloadPpt } = require("../services/pptServices");
 const differ = require("../utils/differ");
+const getMergedPpt = require("../utils/merge");
 
 const router = express.Router();
 
