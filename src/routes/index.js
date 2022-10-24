@@ -3,7 +3,7 @@ const createError = require("http-errors");
 
 const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
-const { uploadPpt } = require("../services/pptServices");
+const uploadPpt = require("../services/pptServices");
 const createPpt = require("../utils/createPpt");
 const differ = require("../utils/differ");
 const getMergedPpt = require("../utils/merge");
@@ -63,7 +63,7 @@ router.post("/api/ppts/merge", async (req, res, next) => {
       .populate("slides")
       .lean();
     const mergedPptData = getMergedPpt(originalPpt, comparablePpt, mergeData);
-    const createdPpt = createPpt(mergedPptData);
+    const createdPpt = await createPpt(mergedPptData);
     const downloadUrl = await uploadPpt(createdPpt, mergedPptData.fileName);
     const ppt = new Ppt({
       slideWidth: mergedPptData.slideWidth,
