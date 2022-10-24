@@ -79,7 +79,7 @@ router.post("/api/ppts/merge", async (req, res, next) => {
       await Ppt.findByIdAndUpdate(ppt._id, { $push: { slides: slide._id } });
     });
 
-    res.status(200).json({ pptId: ppt._id, mergedPptData });
+    res.status(200).json(ppt._id);
   } catch {
     next(createError(500));
   }
