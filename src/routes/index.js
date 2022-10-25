@@ -89,12 +89,25 @@ router.get("/api/:ppt_id/preview", async (req, res, next) => {
   try {
     const { mergedPptId } = req.query;
     const mergedPpt = await Ppt.findById(mergedPptId).populate("slides").lean();
-    const slides = mergedPpt.slides.map((slide) => {
+    mergedPpt.slides = mergedPpt.slides.map((slide) => {
       const { slideId, items } = slide.data;
       return { slideId, items };
     });
 
-    mergedPpt.slides = slides;
+    res.status(200).json(mergedPpt);
+  } catch {
+    next(createError(500));
+  }
+});
+
+router.get("/api/:ppt_id/download", async (req, res, next) => {
+  try {
+    const { mergedPptId } = req.query;
+    const mergedPpt = await Ppt.findById(mergedPptId).populate("slides").lean();
+    mergedPpt.slides = mergedPpt.slides.map((slide) => {
+      const { slideId, items } = slide.data;
+      return { slideId, items };
+    });
 
     res.status(200).json(mergedPpt);
   } catch {
