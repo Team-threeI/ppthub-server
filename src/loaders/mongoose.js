@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const CONFIG = require("../config/constants");
 
 const mongooseLoader = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });
+    await mongoose.connect(CONFIG.MONGODB_URL, { useNewUrlParser: true });
 
     console.info("Connected to database...");
   } catch (err) {
