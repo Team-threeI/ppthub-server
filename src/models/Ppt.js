@@ -6,6 +6,7 @@ const pptSchema = new mongoose.Schema(
     slideWidth: { type: Number, default: 1280 },
     slideHeight: { type: Number, default: 720 },
     downloadUrl: { type: String },
+    slideOrderList: { type: Array },
     slides: [
       {
         type: mongoose.Schema.Types.ObjectId,

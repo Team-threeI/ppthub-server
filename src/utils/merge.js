@@ -91,7 +91,21 @@ getMergedModifiedSlides함수를 통해 병합할 original과 comparable modifie
 이 후 추출된 slides들을 모아 새로운 ppt파일을 만들어 반환해줍니다.
 */
 
-const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
+const getSortedSlides = (slides, slideOrderList) => {
+  const slideListMap = new Map(
+    slides.map(({ slideId, items }) => [slideId, items]),
+  );
+  return slideOrderList
+    .filter((slideId) => slideListMap.has(slideId))
+    .map((slideId) => ({ slideId, items: slideListMap.get(slideId) }));
+};
+
+const getMergedPpt = (
+  originalPpt,
+  comparablePpt,
+  mergeData,
+  slideOrderList,
+) => {
   const modifiedOriginalSlides = getModifiedSlides(
     originalPpt.slides,
     mergeData,
@@ -128,8 +142,9 @@ const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
     modifiedComparableSlides,
   );
 
-  const slides = [...mergedModifiedSlides, ...addedSlides].sort(
-    (prevSlide, nextSlide) => prevSlide.pageNumber - nextSlide.pageNumber,
+  const slides = getSortedSlides(
+    [...mergedModifiedSlides, ...addedSlides],
+    slideOrderList,
   );
 
   const createDate = new Intl.DateTimeFormat("en", {
@@ -150,4 +165,4 @@ const getMergedPpt = (originalPpt, comparablePpt, mergeData) => {
   return mergedPpt;
 };
 
-module.exports = getMergedPpt;
+module.exports = { getMergedPpt, getSortedSlides };
