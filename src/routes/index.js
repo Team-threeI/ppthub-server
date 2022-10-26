@@ -6,7 +6,7 @@ const PptSlide = require("../models/PptSlide");
 const uploadPpt = require("../services/pptServices");
 const createPpt = require("../utils/createPpt");
 const differ = require("../utils/differ");
-const getMergedPpt = require("../utils/merge");
+const { getMergedPpt, getSortedSlides } = require("../utils/merge");
 
 const router = express.Router();
 
@@ -55,14 +55,20 @@ router.post("/api/ppts/compare", async (req, res, next) => {
 
 router.post("/api/ppts/merge", async (req, res, next) => {
   try {
-    const { originalPptId, comparablePptId, mergeData } = req.body;
+    const { originalPptId, comparablePptId, mergeData, slideOrderList } =
+      req.body;
     const originalPpt = await Ppt.findById(originalPptId)
       .populate("slides")
       .lean();
     const comparablePpt = await Ppt.findById(comparablePptId)
       .populate("slides")
       .lean();
-    const mergedPptData = getMergedPpt(originalPpt, comparablePpt, mergeData);
+    const mergedPptData = getMergedPpt(
+      originalPpt,
+      comparablePpt,
+      mergeData,
+      slideOrderList,
+    );
     const createdPpt = await createPpt(mergedPptData);
     const downloadUrl = await uploadPpt(createdPpt, mergedPptData.fileName);
     const ppt = new Ppt({
@@ -70,8 +76,8 @@ router.post("/api/ppts/merge", async (req, res, next) => {
       slideHeight: mergedPptData.slideHeight,
       fileName: mergedPptData.fileName,
       downloadUrl,
+      slideOrderList,
     });
-
     await ppt.save();
 
     mergedPptData.slides.forEach(async (slideData) => {
@@ -85,29 +91,16 @@ router.post("/api/ppts/merge", async (req, res, next) => {
   }
 });
 
-router.get("/api/:ppt_id/preview", async (req, res, next) => {
-  try {
-    const { mergedPptId } = req.query;
-    const mergedPpt = await Ppt.findById(mergedPptId).populate("slides").lean();
-    mergedPpt.slides = mergedPpt.slides.map((slide) => {
-      const { slideId, items } = slide.data;
-      return { slideId, items };
-    });
-
-    res.status(200).json(mergedPpt);
-  } catch {
-    next(createError(500));
-  }
-});
-
 router.get("/api/:ppt_id/download", async (req, res, next) => {
   try {
     const { mergedPptId } = req.query;
     const mergedPpt = await Ppt.findById(mergedPptId).populate("slides").lean();
-    mergedPpt.slides = mergedPpt.slides.map((slide) => {
+    const slides = mergedPpt.slides.map((slide) => {
       const { slideId, items } = slide.data;
       return { slideId, items };
     });
+    const sortedSlides = getSortedSlides(slides, mergedPpt.slideOrderList);
+    mergedPpt.slides = sortedSlides;
 
     res.status(200).json(mergedPpt);
   } catch {
