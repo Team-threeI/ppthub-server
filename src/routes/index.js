@@ -3,14 +3,18 @@ const createError = require("http-errors");
 
 const Ppt = require("../models/Ppt");
 const PptSlide = require("../models/PptSlide");
-const uploadPpt = require("../services/pptServices");
+const uploadPpt = require("../services/pptService");
 const createPpt = require("../utils/createPpt");
 const differ = require("../utils/differ");
 const { getMergedPpt, getSortedSlides } = require("../utils/merge");
 
 const router = express.Router();
 
-router.post("/api/ppts/save", async (req, res, next) => {
+router.get("/", (req, res) => {
+  res.status(200).json({ result: "Success" });
+});
+
+router.post("/ppts/save", async (req, res, next) => {
   try {
     const { pptData, fileName } = req.body;
     const ppt = new Ppt({
@@ -31,7 +35,7 @@ router.post("/api/ppts/save", async (req, res, next) => {
   }
 });
 
-router.post("/api/ppts/compare", async (req, res, next) => {
+router.post("/ppts/compare", async (req, res, next) => {
   try {
     const { originalPptId, comparablePptId } = req.body;
     const originalPpt = await Ppt.findById(originalPptId)
@@ -53,7 +57,7 @@ router.post("/api/ppts/compare", async (req, res, next) => {
   }
 });
 
-router.post("/api/ppts/merge", async (req, res, next) => {
+router.post("/ppts/merge", async (req, res, next) => {
   try {
     const { originalPptId, comparablePptId, mergeData, slideOrderList } =
       req.body;
@@ -91,7 +95,7 @@ router.post("/api/ppts/merge", async (req, res, next) => {
   }
 });
 
-router.get("/api/:ppt_id/download", async (req, res, next) => {
+router.get("/:ppt_id/download", async (req, res, next) => {
   try {
     const { mergedPptId } = req.query;
     const mergedPpt = await Ppt.findById(mergedPptId).populate("slides").lean();
