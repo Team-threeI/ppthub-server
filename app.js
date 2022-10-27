@@ -15,3 +15,5 @@ app.set("port", port);
 server.listen(port, () => {
   console.log(`server listen on ${port}`);
 });
+
+module.exports = app;
