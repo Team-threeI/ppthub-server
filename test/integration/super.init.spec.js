@@ -58,7 +58,7 @@ describe("Post /ppts/compare 요청을 확인합니다.", () => {
 });
 
 describe("Post /ppts/merge 요청을 확인합니다.", () => {
-  it("Post /ppts/merge 요청이 정상적으로 들어온 경우를 확인합니다..", async () => {
+  it("Post /ppts/merge 요청이 정상적으로 들어온 경우를 확인합니다.", async () => {
     await agent
       .post("/ppts/merge")
       .send({ originalPptId, comparablePptId, mergeData, slideOrderList })
@@ -74,7 +74,7 @@ describe("Post /ppts/merge 요청을 확인합니다.", () => {
 });
 
 describe("Get /:ppt_id/download 요청을 확인합니다", () => {
-  it("Get /:ppt_id/download 요청이 정상적으로 들어온 경우를 확인하비다.", async () => {
+  it("Get /:ppt_id/download 요청이 정상적으로 들어온 경우를 확인합니다.", async () => {
     const checkedData = await agent
       .get(`/${mergedPptId}/download`)
       .query({ mergedPptId });
