@@ -63,8 +63,8 @@ PPT에 대한 비교 및 반영 까지 한번에 도와주는 서비스, **PPTHU
 
 
 # 📸 FEATURE
-- 사용자는 사이트에 확장자명이 ppt인 원본, 비교본 파일을 등록할 수 있습니다.
-- 사용자가 원하지 않은 ppt를 등록했을 경우 되돌리기 버튼을 클릭하여 취소할 수 있습니다.
+- 사용자는 사이트에 확장자명이 pptx인 원본, 비교본 파일을 등록할 수 있습니다.
+- 사용자가 원하지 않은 pptx를 등록했을 경우 되돌리기 버튼을 클릭하여 취소할 수 있습니다.
 - 사용자는 원본 비교본에서 어떤 부분이 달라졌는지 한번에 확인이 가능합니다. 
   - 슬라이드가 추가되거나 삭제된 경우 : 슬라이드 전체에 빗금처리
   - 슬라이드 안의 컨텐츠가 추가되거나 삭제 된 경우 : 슬라이드 내용 안에 처리
@@ -89,7 +89,6 @@ PPT에 대한 비교 및 반영 까지 한번에 도와주는 서비스, **PPTHU
 - React
 - Redux Toolkit
 - Styled-Component
-- ESLint
 
 ### Server
 - JavaScript ES2015+
@@ -97,8 +96,6 @@ PPT에 대한 비교 및 반영 까지 한번에 도와주는 서비스, **PPTHU
 - Express
 - MongoDb & Mongoose
 - AWS S3
-- pptgenjs
-- ESLint
 
 ### Test
 - Jest
@@ -117,12 +114,19 @@ PPT에 대한 비교 및 반영 까지 한번에 도와주는 서비스, **PPTHU
 
 ### Installation
 - **Frontend**
-```
-$ git clone https://github.com/Team-threeI/ppthub-client.git
-$ cd ppthub-client
-$ npm install
-$ npm start
-```
+  Root 디렉토리에 `.env` 파일을 생성하고, 다음 환경변수를 입력하고 실행합니다.
+  ```
+  REACT_APP_API_SERVER_URL = 
+  REACT_APP_CLIENT_URL =
+  REACT_APP_SAMPLE_ORIGINAL_FILE_URL =
+  REACT_APP_SAMPLE_COMPARABLE_FILE_URL =
+  ```
+  ```
+  $ git clone https://github.com/Team-threeI/ppthub-client.git
+  $ cd ppthub-client
+  $ npm install
+  $ npm start
+  ```
 - **Backend**
 
   Root 디렉토리에 `.env` 파일을 생성하고, 다음 환경변수를 입력하고 실행합니다.
@@ -188,7 +192,7 @@ PPT 파일의 구성이 적힌 오래된 웹사이트 하나를 발견했을 때
 <details><summary>양선종</summary>
 개발이라는 하나의 주제를 가지고 시작한 첫 프로젝트였던 만큼 이번 프로젝트가 나에게 주는 의미는 매우 크다.
 <br>
-프로세스 관리 방법 중 스크럼 방법을 통해서 프로젝트 계획, 회의 , 칸반 작성 등을 진행하였고 이를 통해서 프로젝트를 함에 있어서 이러한 행위들이 왜 중요한지를 명확하게 꺠닫게 되었다. 이러한 과정들이 없으면 내가 겪은 3주라는 시간이 계획이 있었음에도 정신이 없었는데 얼마나 더 정신이 없었을까 라는 것을 확연하게 느꼇다.
+프로세스 관리 방법 중 스크럼 방법을 통해서 프로젝트 계획, 회의 , 칸반 작성 등을 진행하였고 이를 통해서 프로젝트를 함에 있어서 이러한 행위들이 왜 중요한지를 명확하게 깨닫게 되었다. 이러한 과정들이 없으면 내가 겪은 3주라는 시간이 계획이 있었음에도 정신이 없었는데 얼마나 더 정신이 없었을까 라는 것을 확연하게 느꼇다.
 
 또한 프로젝트를 시작할 때 가지고 있었던 걱정 반 기대 반 이른 감정이 가득 차 있었는데 솔직히 정말 그대로 팀프로젝트에서 들어났다고 개인적으로 생각하고 있다.
 
